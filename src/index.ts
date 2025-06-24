@@ -1,6 +1,7 @@
 import  express  from "express"
 import { DbConnect } from "./database"
 import dotenv from 'dotenv'
+import { Request,Response,NextFunction } from "express"
 
 dotenv.config()
 const app = express()
@@ -26,3 +27,12 @@ app.get("/", (req, res) => {
 })
 
 
+app.use((err: any, req: Request, res: Response, next: NextFunction)=> {
+    res.status(err.statusCode || 500).json({
+        message: err.message || "Server Error",
+        stack: err.stack,
+        data: null,
+        ...err
+
+    })
+})
