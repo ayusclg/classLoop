@@ -1,18 +1,29 @@
 import mongoose  from "mongoose";
 
 
-interface Icollege extends mongoose.Document{
-    collegeName: string,
-    affilatedTo: string,
-    principal: mongoose.Types.ObjectId,
-    vicePrincipal: mongoose.Types.ObjectId,
-    departments: [Record<string, any>],
-    collegeCode: string,
-    address: string,
-    contact: Record<any, string[]>,
-    rating: mongoose.Types.ObjectId,
-    tags:string[]
-}
+interface IDepartment {
+    name: string;
+    head: mongoose.Types.ObjectId;
+  }
+  
+  interface IContact {
+    phone: string[];
+    email: string[];
+    website?: string;
+  }
+  
+  interface Icollege extends Document {
+    collegeName: string;
+    affilatedTo: string;
+    principal: mongoose.Types.ObjectId;
+    vicePrincipal: mongoose.Types.ObjectId;
+    departments: IDepartment[];
+    collegeCode: string;
+    address: string;
+    contact: IContact;
+    rating?: mongoose.Types.ObjectId;
+    tags: string[];
+  }
 const collegeSchema = new mongoose.Schema({
     collegeName: {
         type:String,
