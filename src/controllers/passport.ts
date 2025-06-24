@@ -11,7 +11,19 @@ export const googleCallback = asyncHandler(async (req: Request, res: Response): 
     const accessToken = user.generateAccessToken()
     const refreshToken = user.generateRefreshToken()
 
-    res.status(200).json(new apiResponse(200,{user,accessToken,refreshToken},"User Logged In "))
+    res
+        .cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure:false,
+    })
+        .cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: false,
+    })
+
+    res.status(200).json(new apiResponse(200, { user, accessToken, refreshToken }, "User Logged In "))
+      
+        
 
 
 })

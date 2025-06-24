@@ -13,62 +13,66 @@ export interface Iteacher extends mongoose.Document{
     post: mongoose.Types.ObjectId[],
     subjectExpertise: string[]
     generateRefreshToken(): string,
-    generateAccessToken():string,
+  generateAccessToken(): string,
+  refreshToken:string,
 }
 
 const teacherSchema = new mongoose.Schema({
-    fullname: {
-        type: String,
-        required :true,
+  fullname: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  contact: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  education: [{
+    collegeName: {
+      type: String,
+      required: true,
     },
-    email: {
-        type: String,
-        required: true,
-        unique:true,
+    level: {
+      type: String,
+      required: true,
     },
-    password: {
-        type:String,
-        required:true,
-    },
-    contact: {
-        type: String,
-        required: true,
-        unique:true,
-    },
-    education: [{
-        collegeName: {
-            type: String,
-            required:true,
-        },
-        level: {
-            type: String,
-            required: true,
-        },
         
-    }],
-    experienceYear: {
-        type:Number,
-        required: true,
-    },
-    college: [
-        {
-            type: mongoose.Types.ObjectId,
-            ref: "College",
-            required:true,
-        }
-    ],
-    profilePicture: {
-        type: String,
-        required:true,
-    },
-    posts: [{
-        type: mongoose.Types.ObjectId,
-        ref: "Post",
-    }],
-    subjectExpertise: [{
-        type: String,
-        required:true,
-    }]
+  }],
+  experienceYear: {
+    type: Number,
+    required: true,
+  },
+  college: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "College",
+      required: true,
+    }
+  ],
+  profilePicture: {
+    type: String,
+    required: true,
+  },
+  posts: [{
+    type: mongoose.Types.ObjectId,
+    ref: "Post",
+  }],
+  subjectExpertise: [{
+    type: String,
+    required: true,
+  }],
+  refreshToken: {
+    type:String,
+    }
 },
     { timestamps: true })
 
