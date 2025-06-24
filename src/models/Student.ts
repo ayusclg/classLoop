@@ -38,11 +38,11 @@ const studentSchema = new mongoose.Schema({
   },
   bio: {
     type: String,
-    required:true,
+    
   },
   level: {
     type: String,
-    require: true,
+    
   },
   college: {
     type: mongoose.Types.ObjectId,
