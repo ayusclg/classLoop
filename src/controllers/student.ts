@@ -56,4 +56,41 @@ const studentLogin = asyncHandler(async (req: Request, res: Response): Promise<v
     res.status(200).json(new apiResponse(200,{loggedInUser,accessToken,refreshToken},`welcome to ClassLoop`))
 })
 
-export {studentCreate,studentLogin}         
+const getMyDetails = asyncHandler(async (req: Request, res: Response):Promise<void> => {
+    const user = req.userId
+    if(!user) throw new apiError(401,"User Not Logged")
+    const dbStd = await Student.findById(user).select("-password -refreshToken").lean()
+    if (!dbStd) throw new apiError(401, "Please Create Your Account")
+    res.status(200).json(new apiResponse(200,dbStd,"Details Fetched Successfully"))
+})
+
+const getStudentById = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+  
+    const studentFetched = await Student.findById(req.params.id).select("-password -refreshToken").lean()
+    if (!studentFetched) throw new apiError(404, "User Not Found")
+    res.status(200).json(new apiResponse(200,studentFetched,"Student Fetched Successfully"))
+})
+
+const logout = asyncHandler(async (req: Request, res: Response):Promise<void> => {
+    res.clearCookie("refreshToken", {
+        httpOnly:true,
+        secure:false,
+    })
+    res.clearCookie("accessToken", {
+        httpOnly:true,
+        secure:false,
+    })
+    res.status(200).json(new apiResponse(200,{},"User Logout Successfully"))
+    
+})
+
+const deleteAccount = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const deleteUser = await Student.findByIdAndDelete(req.userId)
+    if (!deleteUser) throw new apiError(500, "Server Error In Deleting User")
+    
+    res.clearCookie("refreshToken",{httpOnly:true,secure:false})
+    res.clearCookie("accessToken", { httpOnly: true, secure: false })
+    
+    res.status(200).json(new apiResponse(200,{},"Please Create New Account Soon"))
+})
+export {studentCreate,studentLogin,getMyDetails,getStudentById,logout,deleteAccount}         

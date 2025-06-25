@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Jwt from 'jsonwebtoken'
-import { string } from "joi";
+import { boolean, string } from "joi";
 
 export interface Iteacher extends mongoose.Document{
     fullname: string,
@@ -72,7 +72,11 @@ const teacherSchema = new mongoose.Schema({
   }],
   refreshToken: {
     type:String,
-    }
+  },
+  isTeacher: {
+    type: boolean,
+    default:false
+  }
 },
     { timestamps: true })
 
@@ -84,6 +88,7 @@ teacherSchema.methods.generateRefreshToken = function () {
   }
   return Jwt.sign({
     _id: this._id,
+    role:"teacher"
    
   }, process.env.REFRESH_TOKEN_SECRET as string, {
     expiresIn:process.env.REFRESH_TOKEN_EXPIRY as any
@@ -98,7 +103,7 @@ teacherSchema.methods.generateAccessToken = function () {
     _id: this._id,
     email: this.email,
     fullname: this.fullname,
-    role:"student"
+    role:"teacher"
   }, process.env.ACCESS_TOKEN_SECRET as string, {
     expiresIn:process.env.ACCESS_TOKEN_EXPIRY as any
   })
@@ -106,6 +111,7 @@ teacherSchema.methods.generateAccessToken = function () {
 
 
 
-teacherSchema.index({ experience: 1, college: 1, fullname: 1 })
+teacherSchema.index({ experienceYear: 1, college: 1, fullname: 1 })
+
 
 export const Teacher =mongoose.model<Iteacher>("Teacher",teacherSchema)
