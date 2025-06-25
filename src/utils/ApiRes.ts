@@ -6,7 +6,7 @@ class apiResponse extends Error{
     constructor(
         statusCode: number,
         data: Record<string, any>,
-        message: string = "Successfull",
+        message: string = "Successful",
     )
     {
         super(message);

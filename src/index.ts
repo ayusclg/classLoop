@@ -1,17 +1,23 @@
 import  express  from "express"
 import { DbConnect } from "./database"
 import dotenv from 'dotenv'
-import { Request,Response,NextFunction } from "express"
+import { Request, Response, NextFunction } from "express"
+import cookieParser from "cookie-parser"
+import passport from "passport"
+import passportRoutes from './routes/passport'
 
 dotenv.config()
+
+
 const app = express()
 const port = process.env.PORT || 5000
 const host = "127.0.0.1"
 
 
 app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
+app.use(passport.initialize())
 
 DbConnect().then((res) => {
    app.listen(port, () => {
@@ -26,6 +32,7 @@ app.get("/", (req, res) => {
     res.send("Hello This Is Typescript Backend")
 })
 
+app.use("/passport",passportRoutes)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction)=> {
     res.status(err.statusCode || 500).json({

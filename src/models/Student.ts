@@ -14,6 +14,7 @@ export interface Istudent extends Document{
   address: string,
   generateRefreshToken(): string,
   generateAccessToken(): string,
+  refreshToken:string,
 }
 
 const studentSchema = new mongoose.Schema({
@@ -38,11 +39,11 @@ const studentSchema = new mongoose.Schema({
   },
   bio: {
     type: String,
-    required:true,
+    
   },
   level: {
     type: String,
-    require: true,
+    
   },
   college: {
     type: mongoose.Types.ObjectId,
@@ -53,6 +54,9 @@ const studentSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
+  },
+  refreshToken: {
+    type:String,
   }
 
 })
