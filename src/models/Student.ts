@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import  Jwt  from "jsonwebtoken";
 
-export interface Istudent extends Document{
+export interface Istudent {
   googleId?: string,
   linkedinId?: string,
   fullname: string,
@@ -57,8 +57,11 @@ const studentSchema = new mongoose.Schema({
   },
   refreshToken: {
     type:String,
+  },
+  isStudent: {
+    type: Boolean,
+    default:true,
   }
-
 })
 studentSchema.methods.generateRefreshToken = function () {
   if (!process.env.REFRESH_TOKEN_SECRET || !process.env.REFRESH_TOKEN_EXPIRY) {
@@ -66,6 +69,7 @@ studentSchema.methods.generateRefreshToken = function () {
   }
   return Jwt.sign({
     _id: this._id,
+    role:"student"
    
   }, process.env.REFRESH_TOKEN_SECRET as string, {
     expiresIn:process.env.REFRESH_TOKEN_EXPIRY as any
@@ -86,5 +90,5 @@ studentSchema.methods.generateAccessToken = function () {
   })
 }
 
-studentSchema.index({email:1,})
+
 export const Student = mongoose.model<Istudent>("Student",studentSchema)
