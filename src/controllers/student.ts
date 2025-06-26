@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/AsyncHandler";
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt'
 import apiResponse from "../utils/ApiRes";
+import { uploadImage } from "../middlewares/fileUpload";
 
 
 
@@ -84,6 +85,30 @@ const logout = asyncHandler(async (req: Request, res: Response):Promise<void> =>
     
 })
 
+const addOrUpdateProfile = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const file = req.file as Express.Multer.File
+    const uploadCloud = await uploadImage(file)
+    const studentProfileCheck = await Student.findById(req.userId) 
+    if (studentProfileCheck) {
+        if (studentProfileCheck.profilePicture == null) {
+            console.log("aayush")
+            await Student.findByIdAndUpdate(req.userId, {
+                $set: {
+                    profilePicture: uploadCloud
+                }
+            })
+        }
+        else {   
+            studentProfileCheck.profilePicture = uploadCloud
+        }
+    }
+    else {
+        throw new apiError(404,"User Not Found")
+        
+    }
+    res.status(200).json(new apiResponse(200,studentProfileCheck,"Profile Picture Updated"))
+})
+
 const deleteAccount = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const deleteUser = await Student.findByIdAndDelete(req.userId)
     if (!deleteUser) throw new apiError(500, "Server Error In Deleting User")
@@ -93,4 +118,16 @@ const deleteAccount = asyncHandler(async (req: Request, res: Response): Promise<
     
     res.status(200).json(new apiResponse(200,{},"Please Create New Account Soon"))
 })
-export {studentCreate,studentLogin,getMyDetails,getStudentById,logout,deleteAccount}         
+
+const addMyDetails = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { address, bio } = req.body
+    const studentExist = await Student.findById(req.userId)
+    if (!studentExist) throw new apiError(401, "Unauthorized")
+    
+    if (address) studentExist.address = address;
+    if (bio) studentExist.bio = bio;
+    await studentExist.save()
+
+    res.status(200).json(new apiResponse(200,studentExist,"Details Added"))
+})
+export {studentCreate,studentLogin,getMyDetails,getStudentById,logout,deleteAccount,addOrUpdateProfile,addMyDetails}                

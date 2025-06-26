@@ -1,6 +1,7 @@
 import multer from "multer";
 import cloudinary, { UploadApiResponse } from "cloudinary"
-
+import dotenv from 'dotenv'
+dotenv.config()
 
 
 cloudinary.v2.config({
@@ -18,12 +19,14 @@ export const Upload = multer({
 })
 
 
- export const uploadImage = async (file: Express.Multer.File): Promise<String> =>{
+ export const uploadImage = async (file: Express.Multer.File): Promise<string> =>{
     try {
         const b64 = Buffer.from(file.buffer).toString("base64")
-        const dataUri = `data${file.mimetype};b64${b64}`
+        const dataUri = `data:${file.mimetype};base64,${b64}`
+        
 
         const result: UploadApiResponse = await cloudinary.v2.uploader.upload(dataUri)
+        
         return result.secure_url
     } catch (error) {
         console.log(error)
