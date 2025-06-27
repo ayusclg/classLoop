@@ -1,5 +1,5 @@
 import express from 'express'
-import { addMyDetails, addOrUpdateProfile, deleteAccount, getMyDetails, getStudentById, logout, studentCreate, studentLogin } from '../controllers/student'
+import { addMyDetails, addOrUpdateProfile, deleteAccount, getMyDetails, getStudentById, logout, searchStudent, studentCreate, studentLogin } from '../controllers/student'
 import { verifyUser } from '../middlewares/auth'
 import { Upload } from '../middlewares/fileUpload'
 
@@ -13,5 +13,6 @@ router.get("/getOther/:id", verifyUser, getStudentById)
 router.post("/logout",verifyUser,logout)
 router.delete("/delete",verifyUser,deleteAccount)
 router.post("/profile", Upload.single("profilePicture"), verifyUser, addOrUpdateProfile)
-router.put("/details",verifyUser,addMyDetails)
+router.put("/details", verifyUser, addMyDetails)
+router.get("/searchStd",verifyUser,searchStudent)
 export default router

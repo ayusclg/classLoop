@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import bcrypt from 'bcrypt'
 import apiResponse from "../utils/ApiRes";
 import { uploadImage } from "../middlewares/fileUpload";
+import { filterQuery } from "../utils/filterJson";
 
 
 
@@ -130,4 +131,35 @@ const addMyDetails = asyncHandler(async (req: Request, res: Response): Promise<v
 
     res.status(200).json(new apiResponse(200,studentExist,"Details Added"))
 })
-export {studentCreate,studentLogin,getMyDetails,getStudentById,logout,deleteAccount,addOrUpdateProfile,addMyDetails}                
+
+const searchStudent = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const filter = req.query.filter as string || ""
+   
+    const sortOption = req.query.filter  as string || "fullName"
+    const page = parseInt(req.query.page as string) || 1
+
+    const query: Record<string, any> = filter ? filterQuery(filter) : { field: "empty", value: null }
+
+    const documentExist = await Student.countDocuments(query)
+    if (documentExist === 0)
+    {
+        throw new apiError(404,"No Student Results Found")
+    }
+    
+    const perPage = 10
+    const skip = (page - 1) * perPage
+    
+    const result = await Student.find(query).sort({ [sortOption]: 1 }).select("-password -refreshToken").skip(skip).limit(perPage).lean()
+    const totalResult = documentExist
+
+    const resultObj = {
+
+        result,
+        totalResult,
+        page,
+        skip,
+    }
+    res.status(200).json(new apiResponse(200,resultObj,"Search Item Fetched Successfully"))
+        
+})
+export {studentCreate,studentLogin,getMyDetails,getStudentById,logout,deleteAccount,addOrUpdateProfile,addMyDetails,searchStudent}                
