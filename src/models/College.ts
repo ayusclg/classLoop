@@ -34,13 +34,11 @@ const collegeSchema = new mongoose.Schema({
         required:true,
     },
     principal: {
-        type: mongoose.Types.ObjectId,
-        ref:"Teacher",
-        required:true,
+        type:String,
+        required:true,  
     },
     vicePrincipal: {
-        type: mongoose.Types.ObjectId,
-        ref:"Teacher",
+        type:String,      
         required:true,
     },
     departments: [{

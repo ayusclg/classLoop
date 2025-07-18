@@ -153,7 +153,6 @@ const searchStudent = asyncHandler(async (req: Request, res: Response): Promise<
     const totalResult = documentExist
 
     const resultObj = {
-
         result,
         totalResult,
         page,

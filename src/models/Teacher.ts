@@ -74,8 +74,12 @@ const teacherSchema = new mongoose.Schema({
     type:String,
   },
   isTeacher: {
-    type: boolean,
+    type:Boolean,
     default:false
+  },
+  role: {
+    type: String,
+    
   }
 },
     { timestamps: true })
